@@ -44,8 +44,36 @@ def pad(x,y):
         y = ['0'] + y
     return x,y
 
+def _quadratic_multiply(x, y):
+  return _quadratic_multiply(x, y).decimal_val
+
 def quadratic_multiply(x, y):
-    ### TODO
+  xvec = x.binary_vec
+  yvec = y.binary_vec
+
+  xvec, yvec = pad(xvec, yvec)
+
+  if x.decimal_val <= 1 and y.decimal_val <= 1:
+    return x.decimal_val * y.decimal_val
+  
+
+  xleft, xright = split_number(xvec)
+  yleft, yright = split_number(yvec)
+
+  left = _quadratic_multiply(xleft, yleft)
+  midLeft = _quadratic_multiply(xleft, yright)
+  midRight = _quadratic_multiply(xright, yleft)
+  right = _quadratic_multiply(xright, yright)
+
+  left = bit_shift(left, len(xvec))
+
+  middle = BinaryNumber(midLeft.decimal_val + midRight.decimal_val)
+
+  middle = bit_shift(middle, len(yvec)//2)
+
+  result = left.decimal_val + middle.decimal_val + right.decimal_val
+
+  return BinaryNumber(result)
     pass
     ###
 
